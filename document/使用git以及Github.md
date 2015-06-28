@@ -14,4 +14,7 @@ sudo apt-get install git
 6.  clone a project git clone https://github.com/Beggars/bigface.git
 
 
-#### resp相关操作
+#### 分支创建 推送合并
+```
+git checkout -b dev
+```
