@@ -15,6 +15,28 @@ sudo apt-get install git
 
 
 #### 分支创建 推送合并
+- 创建dev分支 切换到dev分支
 ```
 git checkout -b dev
+git branch ＃ 查看当前分支情况
+```
+－ 切换回 master 然后合并
+```
+git checkout master
+git merge dev
+```
+- 删除 dev 分支
+```
+git branch -d dev
+```
+
+- 常用命令
+```
+Git鼓励大量使用分支：
+查看分支：git branch
+创建分支：git branch <name>
+切换分支：git checkout <name>
+创建+切换分支：git checkout -b <name>
+合并某分支到当前分支：git merge <name>
+删除分支：git branch -d <name>
 ```
