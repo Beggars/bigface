@@ -8,6 +8,7 @@ sudo apt-get install git
 5. config you local git
 
 >git config --global user.name "your name"
+
 >git config --global user.email "your email"
 
 6.  clone a project git clone https://github.com/Beggars/bigface.git
