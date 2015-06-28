@@ -20,7 +20,7 @@ sudo apt-get install git
 git checkout -b dev
 git branch ＃ 查看当前分支情况
 ```
-－ 切换回 master 然后合并
+- 切换回 master 然后合并
 ```
 git checkout master
 git merge dev
