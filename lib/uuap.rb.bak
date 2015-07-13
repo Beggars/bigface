@@ -1,0 +1,68 @@
+require 'net/http'
+require 'logger'
+$logger = Logger.new('../log/uuap.log')
+
+class Uuap
+  attr_accessor :username, :password, :lt, :execution
+  @@LOGIN_URL = 'https://uuap.baidu.com/login'
+
+  def initialize(username, password)
+    @username = username
+    @password = password
+    @lt, @execution = self.init_params
+  end
+
+  def login_url
+    @@LOGIN_URL
+  end
+
+  def init_params
+    begin
+      uri = URI(@@LOGIN_URL)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = TRUE
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+
+      request = Net::HTTP::Get.new uri.path
+      response = http.request request
+      res_body = response.body
+      reg_lt = /\"lt\"\svalue=\"(.*)\"/.match(res_body)[1]
+      reg_execution =/\"execution\"\svalue=\"(.*)\"/.match(res_body)[1]
+      [reg_lt, reg_execution]
+    rescue => e
+      $logger.error(e.to_s)
+    end
+  end
+
+  def login
+    uri = URI(@@LOGIN_URL)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+
+    request = Net::HTTP::Post.new(uri.path)
+    request['User-Agent'] ='User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36'
+    request['Referer'] = 'https://uuap.baidu.com:443/login?service=http%3A%2F%2Frms.baidu.com%2F%3Fr%3DindexNew%2Findex%2316&gateway=true'
+    request.form_data ={'username'=>@username, 'password'=>@password,'rememberMe'=>'on','lt'=>@lt, 'execution'=>@execution,'_eventId'=>'submit','type'=>1}
+    response = http.request(request)
+    cookie = response.header['set-cookie']
+    request['cookie'] = cookie
+    response = http.request(request)
+    response.header['set-cookie']
+  end
+end
+
+uuap = Uuap.new('huangyong06', '^thcpy4you$918918')
+
+puts uuap.lt, uuap.execution
+puts uuap.login
+
+
+uri = URI('http://rms.baidu.com/?r=indexNew/index')
+http = Net::HTTP.new(uri.host, uri.port)
+
+request = Net::HTTP::Get.new '/?r=indexNew/index'
+request['cookie'] = uuap.login
+response = http.request request
+res_body = response.body
+puts res_body
